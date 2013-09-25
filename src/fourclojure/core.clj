@@ -92,10 +92,28 @@
 (= 20 ((hash-map :a 10, :b 20, :c 30) :b))
 (= 20 (:b {:a 10, :b 20, :c 30}))
 
-; 11. Maps: conj - You can conjoin either a vector or a map, but not (oddly) a list - this gives a ClassCast Exception
+; 11. Maps: conj - You can conjoin either a vector or a map, but not (oddly) a list - this gives a Class Cast Exception
 
 (= {:a 1, :b 2, :c 3} (conj {:a 1} {:b 2} [:c 3]))
 (= {:a 1, :b 2, :c 3} (conj {:a 1} [:b 2] [:c 3]))
-; (= {:a 1, :b 2, :c 3} (conj {:a 1} '(:b 2) [:c 3])) - ClassCast Exception
+; (= {:a 1, :b 2, :c 3} (conj {:a 1} '(:b 2) [:c 3])) - java.lang.ClassCastException
 
+; 12. Intro to Sequences
+
+(= 3 (first '(3 2 1)))
+(= 3 (second [2 3 4]))
+(= 3 (last (list 1 2 3)))
+
+; 13. Sequences: rest - remember the equivalence from Q6
+
+(= [20 30 40] (rest [10 20 30 40]))
+(= (vector 20 30 40) (rest [10 20 30 40]))
+(= '(20 30 40) (rest [10 20 30 40]))
+
+; 14. Intro to Functions
+
+(= 8 ((fn add-five [x] (+ x 5)) 3))
+(= 8 ((fn [x] (+ x 5)) 3))
+(= 8 (#(+ % 5) 3))
+(= 8 ((partial + 5) 3))
 
