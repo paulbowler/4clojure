@@ -72,3 +72,15 @@
 
 (= '(1 2 3 4) (conj [1 2 3] 4))
 (= '(1 2 3 4) (conj [1 2] 3 4))
+
+; 8. Intro to Sets - Sets only hold unique values, not duplicates. Sets use the #{} format.
+
+(= #{:a :b :c :d} (set '(:a :a :b :c :c :c :c :d :d)))
+(= #{:a :b :c :d} (clojure.set/union #{:a :b :c} #{:b :c :d}))
+
+; Sets can also be created with the set function taking either a (quoted) list or vector
+
+(= (set [:a :b :c :d]) (set '(:a :a :b :c :c :c :c :d :d)))
+(= (set [:a :b :c :d]) (clojure.set/union #{:a :b :c} #{:b :c :d}))
+
+
