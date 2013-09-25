@@ -178,3 +178,28 @@
 (= (#(first (drop 1 (reverse %))) (list 1 2 3 4 5)) 4)
 (= (#(nth % (- (count %) 2)) ["a" "b" "c"]) "b")
 (= (#(first (drop (- (count %) 2) %)) [[1 2] [3 4]]) [1 2])
+
+; 21. Nth Element - without using 'nth'
+
+; Options:
+;	Drop the first 'n' items and then return the first
+
+(= (#(first (drop %2 %1)) '(4 5 6 7) 2) 6)
+(= (#(first (drop %2 %1)) [:a :b :c] 0) :a)
+(= (#(first (drop %2 %1)) [1 2 3 4] 1) 2)
+(= (#(first (drop %2 %1)) '([1 2] [3 4] [5 6]) 2) [5 6])
+
+; 22. Count a Sequence - without using count
+
+; Options:
+;	Iterate through each item adding 1 to a counter. Reduce is great for this type of thing.
+;	Add together a sequence of 1's using Map
+
+(= (#(reduce (fn [a b] (inc a)) 0 %) '(1 2 3 3 1)) 5)
+(= (#(reduce (fn [a b] (inc a)) 0 %) "Hello World") 11)
+(= (#(reduce (fn [a b] (inc a)) 0 %) [[1 2] [3 4] [5 6]]) 3)
+(= (fn [coll] (apply + (map (fn [x] 1) coll)) '(13)) 1)
+(= (#(apply + (map (fn [x] 1) %)) '(:a :b :c)) 3)
+
+
+
