@@ -193,13 +193,23 @@
 
 ; Options:
 ;	Iterate through each item adding 1 to a counter. Reduce is great for this type of thing.
-;	Add together a sequence of 1's using Map
+;	Add together a sequence of 1's using Map - two options here; use 'constantly or a new function
 
 (= (#(reduce (fn [a b] (inc a)) 0 %) '(1 2 3 3 1)) 5)
 (= (#(reduce (fn [a b] (inc a)) 0 %) "Hello World") 11)
-(= (#(reduce (fn [a b] (inc a)) 0 %) [[1 2] [3 4] [5 6]]) 3)
+(= (#(reduce + (map (constantly 1) %)) [[1 2] [3 4] [5 6]]) 3)
 (= (fn [coll] (apply + (map (fn [x] 1) coll)) '(13)) 1)
 (= (#(apply + (map (fn [x] 1) %)) '(:a :b :c)) 3)
+
+; 23. Reverse a Sequence - without using reverse or rseq
+
+; Options:
+;	Take the nth using count and repeat using dec until zero
+;	Use a filo queue-like structure repeatedly popping the top item onto the top of a new list. 'into' does this for us already.
+
+(= (#(into () %) [1 2 3 4 5]) [5 4 3 2 1])
+(= (#(into () %) (sorted-set 5 7 2 7)) '(7 5 2))
+(= (#(into () %) [[1 2][3 4][5 6]]) [[5 6][3 4][1 2]])
 
 
 
