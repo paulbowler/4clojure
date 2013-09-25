@@ -1,5 +1,5 @@
 ;;
-;; 4clojure.com Solutions, 2012 Paul Bowler
+;; 4clojure.com Solutions, 2013 Paul Bowler
 ;; Distributed under the Eclipse Public License, the same as 4Clojure.
 ;;
 
@@ -49,5 +49,7 @@
 (= '(1 2 3 4) (conj '(2 3 4) 1))
 (= '(1 2 3 4) (conj '(3 4) 2 1))
 
+; 6. Intro to Vectors - all resulting data structures are logically equal even though they may be different collection types
 
+(= [:a :b :c] (list :a :b :c) (vec '(:a :b :c)) (vector :a :b :c))
 
