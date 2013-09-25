@@ -130,3 +130,51 @@
 (= (#(str "Hello, " % "!") "Jenn") "Hello, Jenn!")
 (= (#(str "Hello, " % "!") "Rhea") "Hello, Rhea!")
 
+; 17. Sequences: map - remember equivalences from Q6
+
+(= [6 7 8] (map #(+ % 5) '(1 2 3)))
+(= '(6 7 8) (map #(+ % 5) '(1 2 3)))
+(= (vector 6 7 8) (map #(+ % 5) '(1 2 3)))
+(= (list 6 7 8) (map #(+ % 5) '(1 2 3)))
+
+; 18. Sequences: filter
+
+(= '(6 7) (filter #(> % 5) '(3 4 5 6 7)))
+
+; 19. Last Element - not allowed to use the 'last' function, essentially writing our own
+
+; Options:
+; 	We can use 'nth' along with 'count' minus 1
+;	We could also use 'dec' instead of minus to remove a magic number
+;	Or we could reverse the list and take the first item - reverse is not lazy though
+;	Or using 'reduce' with a bare function
+ 
+(= (#(nth % (- (count %) 1)) [1 2 3 4 5]) 5)
+(= (#(nth % (dec (count %))) '(5 4 3)) 3)
+(= (#(first (reverse %)) ["b" "c" "d"]) "d")
+(= (reduce (fn [a b] b) ["b" "c" "d"]) "d")
+
+; Are there efficiency tradeoffs for each of these options?
+; Using a larger data set of 1,000,000 entries we get the following:
+
+(time (#(nth % (- (count %) 1)) [range 1000000]))
+"Elapsed time: 0.119 msecs"
+
+(time (#(first (reverse %)) [range 1000000]))
+"Elapsed time: 0.107 msecs"
+
+(time (reduce (fn [x y] y) [range 1000000]))
+"Elapsed time: 0.116 msecs"
+
+; With this example the timings are roughly equivalent
+
+; 20. Penultimate Element
+
+; Options:
+;	We can reverse the list, drop the head item and return the next
+; 	We can take the 'nth' using the count - 2
+;	Or drop the first 'count minus 2' and take the next)
+
+(= (#(first (drop 1 (reverse %))) (list 1 2 3 4 5)) 4)
+(= (#(nth % (- (count %) 2)) ["a" "b" "c"]) "b")
+(= (#(first (drop (- (count %) 2) %)) [[1 2] [3 4]]) [1 2])
