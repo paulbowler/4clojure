@@ -83,4 +83,19 @@
 (= (set [:a :b :c :d]) (set '(:a :a :b :c :c :c :c :d :d)))
 (= (set [:a :b :c :d]) (clojure.set/union #{:a :b :c} #{:b :c :d}))
 
+; 9. Sets: conj - sets are naturally ordered using the underlying data as the comparator
+
+(= #{1 2 3 4} (conj #{1 4 3} 2))
+
+; 10. Intro to Maps - keywords can be used as lookup functions
+
+(= 20 ((hash-map :a 10, :b 20, :c 30) :b))
+(= 20 (:b {:a 10, :b 20, :c 30}))
+
+; 11. Maps: conj - You can conjoin either a vector or a map, but not (oddly) a list - this gives a ClassCast Exception
+
+(= {:a 1, :b 2, :c 3} (conj {:a 1} {:b 2} [:c 3]))
+(= {:a 1, :b 2, :c 3} (conj {:a 1} [:b 2] [:c 3]))
+; (= {:a 1, :b 2, :c 3} (conj {:a 1} '(:b 2) [:c 3])) - ClassCast Exception
+
 
