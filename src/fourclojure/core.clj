@@ -117,3 +117,16 @@
 (= 8 (#(+ % 5) 3))
 (= 8 ((partial + 5) 3))
 
+; 15. Double Down - many alternatives
+
+(= ((fn double-down [x] (* 2 x)) 2) 4)
+(= ((fn [x] (+ x x) 3) 6)
+(= (#(* 2 %1) 11) 22)
+(= (#(* 2 %) 7) 14)
+
+; 16 Hello World
+
+(= ((fn hello-world [name] (str "Hello, " name "!")) "Dave") "Hello, Dave!")
+(= (#(str "Hello, " % "!") "Jenn") "Hello, Jenn!")
+(= (#(str "Hello, " % "!") "Rhea") "Hello, Rhea!")
+
