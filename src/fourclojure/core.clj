@@ -38,3 +38,16 @@
 ; 4. Intro to Lists
 
 (= (list :a :b :c) '(:a :b :c))
+
+; 5. Lists: conj
+
+(= (list 1 2 3 4) (conj '(2 3 4) 1))
+(= (list 1 2 3 4) (conj '(3 4) 2 1))
+
+; or using a quoted form:
+
+(= '(1 2 3 4) (conj '(2 3 4) 1))
+(= '(1 2 3 4) (conj '(3 4) 2 1))
+
+
+
