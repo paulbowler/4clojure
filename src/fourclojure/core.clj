@@ -53,3 +53,22 @@
 
 (= [:a :b :c] (list :a :b :c) (vec '(:a :b :c)) (vector :a :b :c))
 
+; 7. Vectors: conj
+
+(= [1 2 3 4] (conj [1 2 3] 4))
+(= [1 2 3 4] (conj [1 2] 3 4))
+
+; or we could use the vector function:
+
+(= (vector 1 2 3 4) (conj [1 2 3] 4))
+(= (vector 1 2 3 4) (conj [1 2] 3 4))
+
+; or the vec function with a list:
+
+(= (vec '(1 2 3 4)) (conj [1 2 3] 4))
+(= (vec '(1 2 3 4)) (conj [1 2] 3 4))
+
+; or simply a list:
+
+(= '(1 2 3 4) (conj [1 2 3] 4))
+(= '(1 2 3 4) (conj [1 2] 3 4))
