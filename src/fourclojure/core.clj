@@ -264,3 +264,49 @@
 (= (my_flatten '((1 2) 3 [4 [5 6]])) '(1 2 3 4 5 6))
 (= (my_flatten ["a" ["b"] "c"]) '("a" "b" "c"))
 (= (my_flatten '((((:a))))) '(:a))
+
+; 29. Get the Caps
+
+; Use a regex to extract the caps into a sequence then str them together.
+; Note that str on its own will str the whole string as it is. Instead you must 'apply' str to each item in the sequence.
+
+(= (#(apply str (re-seq #"[A-Z]" %)) "HeLlO, WoRlD!") "HLOWRD")
+(empty? (#(apply str (re-seq #"[A-Z]" %)) "nothing"))
+(= (#(apply str (re-seq #"[A-Z]" %)) "$#A(*&987Zf") "AZ")
+
+; 30. Compress a Sequence
+
+; We can use 'partition-by' to split the sequence when the item changes. We then need to take the first item
+; from each sub-sequence using 'map' and 'first'. Job done!
+ 
+(= (apply str (#(map first (partition-by identity %)) "Leeeeeerrroyyy")) "Leroy")
+(= (#(map first (partition-by identity %)) [1 1 2 3 3 2 2 3]) '(1 2 3 2 3))
+(= (#(map first (partition-by identity %)) [[1 2] [1 2] [3 4] [1 2]]) '([1 2] [3 4] [1 2]))
+
+; 31. Pack a Sequence - Simply use the same method as 30 using 'partition-by'.
+
+(= (#(partition-by identity %) [1 1 2 1 1 1 3 3]) '((1 1) (2) (1 1 1) (3 3)))
+(= (#(partition-by identity %) [:a :a :b :b :c]) '((:a :a) (:b :b) (:c)))
+(= (#(partition-by identity %) [[1 2] [1 2] [3 4]]) '(([1 2] [1 2]) ([3 4])))
+
+; 32. Duplicate a Sequence
+
+; We can duplicate the sequence and then interleave elements from each resulting sequence in turn
+
+(= (#(apply interleave (repeat 2 %)) [1 2 3]) '(1 1 2 2 3 3))
+(= (#(apply interleave (repeat 2 %)) [:a :a :b :b]) '(:a :a :a :a :b :b :b :b))
+(= (#(apply interleave (repeat 2 %)) [[1 2] [3 4]]) '([1 2] [1 2] [3 4] [3 4]))
+(= (#(apply interleave (repeat 2 %)) [[1 2] [3 4]]) '([1 2] [1 2] [3 4] [3 4]))
+
+; 33. Replicate a Sequence
+
+; On the face of it is the same as 32 but with a variable repetition.
+; i.e. #(apply interleave (repeat %2 %1))
+; However, interleave does not work with a single arity (i.e. one input sequence) in versions of clojure before 1.6.
+; For that we need to wrap in another function that uses mapcat on that function to repeat n times
+
+(= (#(apply interleave (repeat %2 %1)) [1 2 3] 2) '(1 1 2 2 3 3))
+(= (#(apply interleave (repeat %2 %1)) [:a :b] 4) '(:a :a :a :a :b :b :b :b))
+(= ((fn replicate-seq [coll n] (mapcat #(repeat n %) coll)) [4 5 6] 1) '(4 5 6))
+(= ((fn replicate-seq [coll n] (mapcat #(repeat n %) coll)) [[1 2] [3 4]] 2) '([1 2] [1 2] [3 4] [3 4]))
+(= ((fn replicate-seq [coll n] (mapcat #(repeat n %) coll)) [44 33] 2) [44 44 33 33])
