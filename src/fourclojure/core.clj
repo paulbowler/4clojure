@@ -310,3 +310,79 @@
 (= ((fn replicate-seq [coll n] (mapcat #(repeat n %) coll)) [4 5 6] 1) '(4 5 6))
 (= ((fn replicate-seq [coll n] (mapcat #(repeat n %) coll)) [[1 2] [3 4]] 2) '([1 2] [1 2] [3 4] [3 4]))
 (= ((fn replicate-seq [coll n] (mapcat #(repeat n %) coll)) [44 33] 2) [44 44 33 33])
+
+; 34. Implement range - without using range!
+
+; Create a lazy infinite list of increasing integers starting at n1 and take (n2 - n1) of them
+
+(= (#(take (- %2 %1) (iterate inc %1)) 1 4) '(1 2 3))
+(= (#(take (- %2 %1) (iterate inc %1)) -2 2) '(-2 -1 0 1))
+(= (#(take (- %2 %1) (iterate inc %1)) 5 8) '(5 6 7))
+
+; 35. Local bindings
+
+(= 7 (let [x 5] (+ 2 x)))
+(= 7 (let [x 3, y 10] (- y x)))
+(= 7 (let [x 21] (let [y 3] (/ x y))))
+
+; 36. Let it Be - Commas are optional, but help clarity
+
+(= 10 (let [x 7, y 3, z 1] (+ x y)))
+(= 4 (let [x 7, y 3, z 1] (+ y z)))
+(= 1 (let [x 7, y 3, z 1] z))
+
+; 37. Regular Expressions - extracts capital letters from input string
+
+(= "ABC" (apply str (re-seq #"[A-Z]+" "bA1B3Ce ")))
+
+; 38. Maximum value - without using max or max-key
+
+; Sort the parameters and take the last (or first if sorting by > function).
+; NOTE: Variable arity equivalent of '& more' in anonymous functions is %&
+
+(= ((fn [& more] (last (sort more))) 1 8 3 4) 8)
+(= (#(last (sort %&)) 30 20) 30)
+(= (#(first (sort > %&)) 45 67 11) 67)
+
+; 39. Interleave Two Seqs - without using interleave
+
+; Use map with a function that simply states the identities of the items then concat together
+; Actually, mapcat can do both operations in one go, and the vector function is ideal for identity
+; across more than one parameter (identity function itself needs single arity).
+
+(= (#(mapcat vector %1 %2) [1 2 3] [:a :b :c]) '(1 :a 2 :b 3 :c))
+(= (#(mapcat vector %1 %2) [1 2] [3 4 5 6]) '(1 3 2 4))
+(= (#(mapcat vector %1 %2) [1 2 3 4] [5]) [1 5])
+(= (#(mapcat vector %1 %2) [30 20] [25 15]) [30 25 20 15])
+
+; 40. Interpose a Seq - without using interpose
+
+; Similar to above, but using a single, cycling vector of the interpose item, then drop the last item.
+
+(= (#(drop-last (mapcat vector %2 (cycle [%1]))) 0 [1 2 3]) [1 0 2 0 3])
+(= (apply str (#(drop-last (mapcat vector %2 (cycle [%1]))) ", " ["one" "two" "three"])) "one, two, three")
+(= (#(drop-last (mapcat vector %2 (cycle [%1]))) :z [:a :b :c :d]) [:a :z :b :z :c :z :d])
+
+; 41. Drop Every Nth Item
+
+; Partition into groups of n length, remove the nth item from each group (if it exists) and then flatten.
+
+(= (#(flatten (map (fn [seq] (take (dec %2) seq)) (partition-all %2 %1))) [1 2 3 4 5 6 7 8] 3) [1 2 4 5 7 8])
+(= (#(flatten (map (fn [seq] (take (dec %2) seq)) (partition-all %2 %1))) [:a :b :c :d :e :f] 2) [:a :c :e])
+(= (#(flatten (map (fn [seq] (take (dec %2) seq)) (partition-all %2 %1))) [1 2 3 4 5 6] 4) [1 2 3 5 6])
+
+; 42. Factorial Fun
+
+; Create a range from 1 to n then reduce with multiply.
+; NOTE: Range by default starts from zero so we need to set the first item and increase the end number by 1.
+
+(= (#(reduce * (range 1 (inc %1))) 1) 1)
+(= (#(reduce * (range 1 (inc %1))) 3) 6)
+(= (#(reduce * (range 1 (inc %1))) 5) 120)
+(= (#(reduce * (range 1 (inc %1))) 8) 40320)
+
+; 43. Reverse Interleave
+
+(= (__ [1 2 3 4 5 6] 2) '((1 3 5) (2 4 6)))
+(= (__ (range 9) 3) '((0 3 6) (1 4 7) (2 5 8)))
+(= (__ (range 10) 5) '((0 5) (1 6) (2 7) (3 8) (4 9)))
