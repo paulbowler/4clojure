@@ -219,3 +219,36 @@
 (= (#(reduce + %) '(0 0 -1)) -1)
 (= (#(reduce + %) '(1 10 3)) 14)
 
+; 25. Find the odd numbers - perfect candidate for the 'filter' and 'odd?' functions
+
+(= (#(filter odd? %) #{1 2 3 4 5}) '(1 3 5))
+(= (#(filter odd? %) [4 2 1 6]) '(1))
+(= (#(filter odd? %) [2 2 4 6]) '())
+(= (#(filter odd? %) [1 1 1 3]) '(1 1 1 3))
+
+; 26. Fibonacci Sequence - typically a good candidate for recursion (from my ML days) or an infinite lazy sequence with 'take'
+
+; Options:
+;	Use stack recursion with base cases. This is fine, but will hit stack limits for large values. Avoid stack-consuming recursion.
+;	Use tail recursion with base case for zero. Again, will fail for large values as JVM does not (yet) support tail-call optimisation.
+;	Use 'recur' to forse explicit tail-call recursion. This avoid the stack space issues.
+;	Use an infinite lazy sequence and then 'take' the first n as required. This will also return a list, as required, and not just the value.
+;	Create infinite lazy fibonacci pairs using 'iterate' and then take the first item from each pair using map - my preferred option
+
+(= (#(take % (map first (iterate (fn [[a b]] [b (+ a b)]) [1 1]))) 3) '(1 1 2))
+(= (#(take % (map first (iterate (fn [[a b]] [b (+ a b)]) [1 1]))) 6) '(1 1 2 3 5 8))
+(= (#(take % (map first (iterate (fn [[a b]] [b (+ a b)]) [1 1]))) 8) '(1 1 2 3 5 8 13 21))
+
+; 27. Palindrome Detector
+
+; Should be able to simply reverse the input and test with the original, however this fails for strings.
+; i.e. #(= % (reverse %)) fails for 'racecar' as (reverse "racecar") gives (\r \a \c \e \c \a \r)
+; Instead, we need to convert the input into a sequence, reverse it and compare with a sequence of the original
+
+(false? (#(= (seq %) (reverse (seq %))) '(1 2 3 4 5)))
+(true? (#(= (seq %) (reverse (seq %))) "racecar"))
+(true? (#(= (seq %) (reverse (seq %))) [:foo :bar :foo]))
+(true? (#(= (seq %) (reverse (seq %))) '(1 1 3 3 1 1)))
+(false? (#(= (seq %) (reverse (seq %))) '(:a :b :c)))
+
+
