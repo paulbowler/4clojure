@@ -8,7 +8,6 @@
 ; 1. Simple Maths
 
 (= true true)
-
 (= (not false) true)
 
 ; 2. Simple Maths
@@ -251,4 +250,17 @@
 (true? (#(= (seq %) (reverse (seq %))) '(1 1 3 3 1 1)))
 (false? (#(= (seq %) (reverse (seq %))) '(:a :b :c)))
 
+; 28. Flatten a Sequence - without using 'flatten'.
 
+; Options:
+;	Could use 'sequential?' to see if item implements Sequential and then iterate (not to be confused with 'seq?' for ISeq's)
+;	The core implementation of flatten uses tree-seq to walk the structure as a tree and filter out only the leaves. Nice!
+
+(defn my_flatten [item]
+   (if (sequential? item)
+     (mapcat my_flatten item)
+     (list item)))
+
+(= (my_flatten '((1 2) 3 [4 [5 6]])) '(1 2 3 4 5 6))
+(= (my_flatten ["a" ["b"] "c"]) '("a" "b" "c"))
+(= (my_flatten '((((:a))))) '(:a))
