@@ -383,6 +383,61 @@
 
 ; 43. Reverse Interleave
 
-(= (__ [1 2 3 4 5 6] 2) '((1 3 5) (2 4 6)))
-(= (__ (range 9) 3) '((0 3 6) (1 4 7) (2 5 8)))
-(= (__ (range 10) 5) '((0 5) (1 6) (2 7) (3 8) (4 9)))
+; Partition in sets of n, then create a new list each item at the same position of each subseq.
+
+(= (#(apply map list (partition %2 %1))) [1 2 3 4 5 6] 2) '((1 3 5) (2 4 6)))
+(= (#(apply map list (partition %2 %1))) (range 9) 3) '((0 3 6) (1 4 7) (2 5 8)))
+(= (#(apply map list (partition %2 %1))) (range 10) 5) '((0 5) (1 6) (2 7) (3 8) (4 9)))
+
+; 44. Rotate Sequence
+
+; Create an infinite lazy sequence of the list using cycle, drop the modulus of n and length to set yourself
+; up on the correct entry, then take the required number of items (same count as original)
+
+(= (#(take (count %2) (drop (mod %1 (count %2)) (cycle %2))) 2 [1 2 3 4 5]) '(3 4 5 1 2))
+(= (#(take (count %2) (drop (mod %1 (count %2)) (cycle %2))) -2 [1 2 3 4 5]) '(4 5 1 2 3))
+(= (#(take (count %2) (drop (mod %1 (count %2)) (cycle %2))) 6 [1 2 3 4 5]) '(2 3 4 5 1))
+(= (#(take (count %2) (drop (mod %1 (count %2)) (cycle %2))) 1 '(:a :b :c)) '(:b :c :a))
+(= (#(take (count %2) (drop (mod %1 (count %2)) (cycle %2))) -4 '(:a :b :c)) '(:c :a :b))
+
+; 45. Intro to Iterate
+
+(= [1 4 7 10 13] (take 5 (iterate #(+ 3 %) 1)))
+
+; 46. Flipping out
+
+; This must return a function that returns the params in the reverse order
+
+(= 3 (((fn [func] (fn [x y] (func y x))) nth) 2 [1 2 3 4 5]))
+(= true (((fn [func] (fn [x y] (func y x))) >) 7 8))
+(= 4 (((fn [func] (fn [x y] (func y x))) quot) 2 8))
+(= [1 2 3] ((__ take) [1 2 3 4 5] 3))
+
+; 47. Contain Yourself - Note: Keys in vectors are array positions!
+ 
+(contains? #{4 5 6} 4)
+(contains? [1 1 1 1 1] 4)
+(contains? {4 :a 2 :b} 4)
+(not (contains? '(1 2 4) 4))
+
+; 48. Intro to some
+
+(= 6 (some #{2 7 6} [5 6 7 8]))
+(= 6 (some #(when (even? %) %) [5 6 7 8]))
+
+; 49. Split a sequence - without using split-at
+
+; Take and Drop should do here - with some vec and vector magic
+
+(= (#(vector (vec (take %1 %2)) (vec (drop %1 %2))) 3 [1 2 3 4 5 6]) [[1 2 3] [4 5 6]])
+(= (#(vector (vec (take %1 %2)) (vec (drop %1 %2))) 1 [:a :b :c :d]) [[:a] [:b :c :d]])
+(= (__ 2 [[1 2] [3 4] [5 6]]) [[[1 2] [3 4]] [[5 6]]])
+
+; 50. Split by Type
+
+; group-by returns a map of types and values, i.e. {java.lang.Long [1 2 3], clojure.lang.Keyword [:a :b :c]}
+; We then just need to get the values (ignoring the keys) using vals
+
+(= (set (#(vals (group-by type %)) [1 :a 2 :b 3 :c])) #{[1 2 3] [:a :b :c]})
+(= (set (#(vals (group-by type %)) [:a "foo"  "bar" :b])) #{[:a :b] ["foo" "bar"]})
+(= (set (#(vals (group-by type %)) [[1 2] :a [3 4] 5 6 :b])) #{[[1 2] [3 4]] [:a :b] [5 6]})
