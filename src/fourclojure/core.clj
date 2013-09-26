@@ -441,3 +441,18 @@
 (= (set (#(vals (group-by type %)) [1 :a 2 :b 3 :c])) #{[1 2 3] [:a :b :c]})
 (= (set (#(vals (group-by type %)) [:a "foo"  "bar" :b])) #{[:a :b] ["foo" "bar"]})
 (= (set (#(vals (group-by type %)) [[1 2] :a [3 4] 5 6 :b])) #{[[1 2] [3 4]] [:a :b] [5 6]})
+
+; 51. Advanced Destructuring
+
+(= [1 2 [3 4 5] [1 2 3 4 5]] (let [[a b & c :as d] [1 2 3 4 5]] [a b c d]))
+
+; 52. Intro to Destructuring
+
+(= [2 4] (let [[a b c d e f g] (range)] [c e]))
+
+; 53. Longest Increasing Sub-Seq
+
+(= (__ [1 0 1 2 3 0 4 5]) [0 1 2 3])
+(= (__ [5 6 1 3 2 7]) [5 6])
+(= (__ [2 3 3 4 5]) [3 4 5])
+(= (__ [7 6 5 4]) [])
