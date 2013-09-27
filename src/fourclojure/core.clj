@@ -452,7 +452,75 @@
 
 ; 53. Longest Increasing Sub-Seq
 
-(= (__ [1 0 1 2 3 0 4 5]) [0 1 2 3])
-(= (__ [5 6 1 3 2 7]) [5 6])
-(= (__ [2 3 3 4 5]) [3 4 5])
-(= (__ [7 6 5 4]) [])
+; We can partition the sequence using each item with its next neighbour - (partition 2 1 seq]
+; Sequences have the second item 1 great than the first, so we next filter just those that conform
+; Then flatten the sequence an remove the duplicates introduced in the first step.
+
+(defn longest-seq [coll]
+  (->> (partition 2 1 coll) 
+    (partition-by #(- (second %) (first %))) 
+    (filter #(= 1 (- (second (first %)) (ffirst %)))) 
+    (reduce #(if (< (count %1) (count %2)) %2 %1) [])
+    flatten
+    distinct))
+
+(= (longest-seq [1 0 1 2 3 0 4 5]) [0 1 2 3])
+(= (longest-seq [5 6 1 3 2 7]) [5 6])
+(= (longest-seq [2 3 3 4 5]) [3 4 5])
+(= (longest-seq [7 6 5 4]) [])
+
+; 54. Partition a sequence - without using partition functions
+
+; Fairly straight-forward implementation using take and drop with recursion.
+
+(defn my_partition [n seq] (when (<= n (count seq)) (cons (take n seq) (my_partition n (drop n seq)))))
+
+(= (my_partition 3 (range 9)) '((0 1 2) (3 4 5) (6 7 8)))
+(= (my_partition 2 (range 8)) '((0 1) (2 3) (4 5) (6 7)))
+(= (my_partition 3 (range 8)) '((0 1 2) (3 4 5)))
+
+; 55. Count Occurrences - without using frequencies
+
+; Sort the items then partition by identity to give ((1 1 1 1) (2 2) (3))
+; The map using a new function that returns a map of the identity with the count to give ({1 4} {2 2} {3 1})
+; Then flatten the structure into a single map using into.
+
+(= (#(into {} (map (fn [seq] {(first seq) (count seq)}) (partition-by identity (sort %)))) [1 1 2 3 2 1 1]) {1 4, 2 2, 3 1})
+(= (#(into {} (map (fn [seq] {(first seq) (count seq)}) (partition-by identity (sort %)))) [:b :a :b :a :b]) {:a 2, :b 3})
+(= (#(into {} (map (fn [seq] {(first seq) (count seq)}) (partition-by identity (sort %)))) '([1 2] [1 3] [1 3])) {[1 2] 1, [1 3] 2})
+
+; 56. Find Distinct Items - without using distinct
+
+; Options:
+;	My first thought was to use a set to remove duplicates: #(into [] (into #{} %))
+;   However, this does not maintain the order and fails the last 3 tests.
+;	Using a sorted set passes the first 2 tests, but fails the last 2: #(into [] (apply sorted-set %))
+;	Instead, we need to step through the sequence and only adding items we have not seen before. We therefor
+;	need to keep track of previously seen items so we can compare. If we add items as keys to a set we can
+;	use 'contains?' for the comparison.
+
+;	This solution returns a higher-order function to do the job
+
+(defn my_distinct [coll] 
+  ((fn step [[f & rst] seen] 
+     (when f
+       (if (seen f) 
+         (step rst seen)
+         (cons f (step rst (conj seen f)))))) 
+   coll #{}))
+
+(= (my_distinct [1 2 1 3 1 2 4]) [1 2 3 4])
+(= (my_distinct [:a :a :b :b :c :c]) [:a :b :c])
+(= (my_distinct '([2 4] [1 2] [1 3] [1 3])) '([2 4] [1 2] [1 3]))
+(= (my_distinct (range 50)) (range 50))
+
+; 57. Simple Recursion
+
+(= [5 4 3 2 1] ((fn foo [x] (when (> x 0) (conj (foo (dec x)) x))) 5))
+
+; 58. Function Composition - without using comp
+
+(= [3 2 1] ((__ rest reverse) [1 2 3 4]))
+(= 5 ((__ (partial + 3) second) [1 2 3 4]))
+(= true ((__ zero? #(mod % 8) +) 3 5 7 9))
+(= "HELLO" ((__ #(.toUpperCase %) #(apply str %) take) 5 "hello world"))
