@@ -573,3 +573,38 @@
 (= (take 5 (my_iterate #(* 2 %) 1)) [1 2 4 8 16])
 (= (take 100 (my_iterate inc 0)) (take 100 (range)))
 (= (take 9 (my_iterate #(inc (mod % 3)) 1)) (take 9 (cycle [1 2 3])))
+
+
+
+; 150. Palindromic Numbers
+
+; This works, but takes too long. Instead, it requires a more efficient way of producing palendromic numbers
+
+(defn palendrome? [x] (filter #(= (str % ) (apply str (reverse (str %)))) (iterate inc x)))
+
+(= (take 26 (palendrome? 0))
+   [0 1 2 3 4 5 6 7 8 9 
+    11 22 33 44 55 66 77 88 99 
+    101 111 121 131 141 151 161])
+	
+(= (take 16 (palendrome? 162))
+   [171 181 191 202 
+    212 222 232 242 
+    252 262 272 282 
+    292 303 313 323])
+	
+(= (take 6 (palendrome? 1234550000))
+   [1234554321 1234664321 1234774321 
+    1234884321 1234994321 1235005321])
+	
+(= (first (palendrome? (* 111111111 111111111)))
+   (* 111111111 111111111))
+	
+(= (set (take 199 (palendrome? 0)))
+   (set (map #(first (palendrome? %)) (range 0 10000))))
+	
+(= true 
+   (apply < (take 6666 (palendrome? 9999999))))
+	
+(= (nth (palendrome? 0) 10101)
+   9102019)
