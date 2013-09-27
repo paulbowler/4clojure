@@ -565,3 +565,11 @@
 (= (#(into {} (map vector %1 %2)) [1 2 3 4] ["one" "two" "three"]) {1 "one", 2 "two", 3 "three"})
 (= (#(into {} (map vector %1 %2)) [:foo :bar] ["foo" "bar" "baz"]) {:foo "foo", :bar "bar"})
 
+; 62. Re-implement Iterate - with iterate!
+
+(defn my_iterate [f x]
+  (cons x (lazy-seq (my_iterate f (f x)))))
+
+(= (take 5 (my_iterate #(* 2 %) 1)) [1 2 4 8 16])
+(= (take 100 (my_iterate inc 0)) (take 100 (range)))
+(= (take 9 (my_iterate #(inc (mod % 3)) 1)) (take 9 (cycle [1 2 3])))
