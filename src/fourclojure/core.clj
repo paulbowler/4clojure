@@ -483,7 +483,8 @@
 
 ; Sort the items then partition by identity to give ((1 1 1 1) (2 2) (3))
 ; The map using a new function that returns a map of the identity with the count to give ({1 4} {2 2} {3 1})
-; Then flatten the structure into a single map using into.
+; Then flatten the structure into a single map using 'into'.
+; Could also have used juxt - see Q59
 
 (= (#(into {} (map (fn [seq] {(first seq) (count seq)}) (partition-by identity (sort %)))) [1 1 2 3 2 1 1]) {1 4, 2 2, 3 1})
 (= (#(into {} (map (fn [seq] {(first seq) (count seq)}) (partition-by identity (sort %)))) [:b :a :b :a :b]) {:a 2, :b 3})
@@ -520,7 +521,47 @@
 
 ; 58. Function Composition - without using comp
 
-(= [3 2 1] ((__ rest reverse) [1 2 3 4]))
-(= 5 ((__ (partial + 3) second) [1 2 3 4]))
-(= true ((__ zero? #(mod % 8) +) 3 5 7 9))
-(= "HELLO" ((__ #(.toUpperCase %) #(apply str %) take) 5 "hello world"))
+; Options:
+;	Use higher order functions to next each function in turn using recursion.
+;	Use reduce and apply to actually apply each function in turn (after reversing the order)
+
+(defn my_comp [& fns]
+    (fn [& args]
+      (let [[f & fns] (reverse fns)]
+        (reduce #(%2 %1) (apply f args) fns))))
+
+(= [3 2 1] ((my_comp rest reverse) [1 2 3 4]))
+(= 5 ((my_comp (partial + 3) second) [1 2 3 4]))
+(= true ((my_comp zero? #(mod % 8) +) 3 5 7 9))
+(= "HELLO" ((my_comp #(.toUpperCase %) #(apply str %) take) 5 "hello world"))
+
+; 59. Juxtaposition - without using juxt
+
+(defn my_juxt [x & xs]
+  (fn [& args]
+    (map #(apply % args) (cons x xs))))
+
+(= [21 6 1] ((my_juxt + max min) 2 3 5 1 6 4))
+(= ["HELLO" 5] ((my_juxt #(.toUpperCase %) count) "hello"))
+(= [2 6 4] ((my_juxt :a :c :b) {:a 2, :b 4, :c 6, :d 8 :e 10}))
+
+; 60. Sequence Reductions - without using reductions
+
+(defn my_reductions
+  ([f coll] (my_reductions f (first coll) (rest coll)))
+  ([f init coll]
+     (cons init
+        (lazy-seq
+            (when-let [s (seq coll)]
+              (my_reductions f (f init (first s)) (rest s)))))))
+
+(= (take 5 (my_reductions + (range))) [0 1 3 6 10])
+(= (my_reductions conj [1] [2 3 4]) [[1] [1 2] [1 2 3] [1 2 3 4]])
+(= (last (my_reductions * 2 [3 4 5])) (reduce * 2 [3 4 5]) 120)
+
+; 61. Map Construction - without using zipmap
+ 
+(= (#(into {} (map vector %1 %2)) [:a :b :c] [1 2 3]) {:a 1, :b 2, :c 3})
+(= (#(into {} (map vector %1 %2)) [1 2 3 4] ["one" "two" "three"]) {1 "one", 2 "two", 3 "three"})
+(= (#(into {} (map vector %1 %2)) [:foo :bar] ["foo" "bar" "baz"]) {:foo "foo", :bar "bar"})
+
