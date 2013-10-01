@@ -147,7 +147,7 @@
 ;	We could also use 'dec' instead of minus to remove a magic number
 ;	Or we could reverse the list and take the first item - reverse is not lazy though
 ;	Or using 'reduce' with a bare function
- 
+
 (= (#(nth % (- (count %) 1)) [1 2 3 4 5]) 5)
 (= (#(nth % (dec (count %))) '(5 4 3)) 3)
 (= (#(first (reverse %)) ["b" "c" "d"]) "d")
@@ -278,7 +278,7 @@
 
 ; We can use 'partition-by' to split the sequence when the item changes. We then need to take the first item
 ; from each sub-sequence using 'map' and 'first'. Job done!
- 
+
 (= (apply str (#(map first (partition-by identity %)) "Leeeeeerrroyyy")) "Leroy")
 (= (#(map first (partition-by identity %)) [1 1 2 3 3 2 2 3]) '(1 2 3 2 3))
 (= (#(map first (partition-by identity %)) [[1 2] [1 2] [3 4] [1 2]]) '([1 2] [3 4] [1 2]))
@@ -414,7 +414,7 @@
 (= [1 2 3] ((__ take) [1 2 3 4 5] 3))
 
 ; 47. Contain Yourself - Note: Keys in vectors are array positions!
- 
+
 (contains? #{4 5 6} 4)
 (contains? [1 1 1 1 1] 4)
 (contains? {4 :a 2 :b} 4)
@@ -457,9 +457,9 @@
 ; Then flatten the sequence an remove the duplicates introduced in the first step.
 
 (defn longest-seq [coll]
-  (->> (partition 2 1 coll) 
-    (partition-by #(- (second %) (first %))) 
-    (filter #(= 1 (- (second (first %)) (ffirst %)))) 
+  (->> (partition 2 1 coll)
+    (partition-by #(- (second %) (first %)))
+    (filter #(= 1 (- (second (first %)) (ffirst %))))
     (reduce #(if (< (count %1) (count %2)) %2 %1) [])
     flatten
     distinct))
@@ -502,12 +502,12 @@
 
 ;	This solution returns a higher-order function to do the job
 
-(defn my_distinct [coll] 
-  ((fn step [[f & rst] seen] 
+(defn my_distinct [coll]
+  ((fn step [[f & rst] seen]
      (when f
-       (if (seen f) 
+       (if (seen f)
          (step rst seen)
-         (cons f (step rst (conj seen f)))))) 
+         (cons f (step rst (conj seen f))))))
    coll #{}))
 
 (= (my_distinct [1 2 1 3 1 2 4]) [1 2 3 4])
@@ -560,7 +560,7 @@
 (= (last (my_reductions * 2 [3 4 5])) (reduce * 2 [3 4 5]) 120)
 
 ; 61. Map Construction - without using zipmap
- 
+
 (= (#(into {} (map vector %1 %2)) [:a :b :c] [1 2 3]) {:a 1, :b 2, :c 3})
 (= (#(into {} (map vector %1 %2)) [1 2 3 4] ["one" "two" "three"]) {1 "one", 2 "two", 3 "three"})
 (= (#(into {} (map vector %1 %2)) [:foo :bar] ["foo" "bar" "baz"]) {:foo "foo", :bar "bar"})
@@ -574,6 +574,59 @@
 (= (take 100 (my_iterate inc 0)) (take 100 (range)))
 (= (take 9 (my_iterate #(inc (mod % 3)) 1)) (take 9 (cycle [1 2 3])))
 
+; 63. Group a Sequence - without using group-by
+
+(defn my_group-by [f xs] (apply merge-with concat (for [x xs] {(f x) [x]})))
+
+(= (my_group-by #(> % 5) [1 3 6 8]) {false [1 3], true [6 8]})
+(= (my_group-by #(apply / %) [[1 2] [2 4] [4 6] [3 6]])
+   {1/2 [[1 2] [2 4] [3 6]], 2/3 [[4 6]]})
+(= (my_group-by count [[1] [1 2] [3] [1 2 3] [2 3]])
+   {1 [[1] [3]], 2 [[1 2] [2 3]], 3 [[1 2 3]]})
+
+; 64. Intro to Reduce
+
+(= 15 (reduce + [1 2 3 4 5]))
+(=  0 (reduce + []))
+(=  6 (reduce + 1 [2 3]))
+
+; 65. Black Box Testing - with tons of restrictions
+
+; Instead, we need to find out their base structures. Simplest way is to empty them and then
+; compare - the clue is given in the last test example as to their base identities.
+
+(defn coll-type [coll]
+  (cond
+  	(= (empty coll) #{}) :set
+    (= (empty coll) {})  :map
+    (= (empty coll) '()) (if (reversible? coll) :vector :list)))
+
+(= :map (coll-type {:a 1, :b 2}))
+(= :list (coll-type (range (rand-int 20))))
+(= :vector (coll-type [1 2 3 4 5 6]))
+(= :set (coll-type #{10 (rand-int 5)}))
+(= [:map :set :vector :list] (map coll-type [{} #{} [] ()]))
+
+; 66. Greatest Common Divisor
+
+; Find the factors of each number as a set, find the intersection of the sets and take the max
+
+(defn gcf [x y]
+  (let [f (fn [z] (set (filter #(zero? (mod z %)) (range 1 (inc z))))) ; The 'factors function'
+        xf (f x)  ; factors of x
+        yf (f y)] ; factors of y
+    (apply max (clojure.set/intersection xf yf))))
+
+(= (gcf 2 4) 2)
+(= (gcf 10 5) 5)
+(= (gcf 5 7) 1)
+(= (gcf 1023 858) 33)
+
+; 67. Prime Numbers
+
+(= (__ 2) [2 3])
+(= (__ 5) [2 3 5 7 11])
+(= (last (__ 100)) 541)
 
 
 ; 150. Palindromic Numbers
@@ -583,28 +636,28 @@
 (defn palendrome? [x] (filter #(= (str % ) (apply str (reverse (str %)))) (iterate inc x)))
 
 (= (take 26 (palendrome? 0))
-   [0 1 2 3 4 5 6 7 8 9 
-    11 22 33 44 55 66 77 88 99 
+   [0 1 2 3 4 5 6 7 8 9
+    11 22 33 44 55 66 77 88 99
     101 111 121 131 141 151 161])
-	
+
 (= (take 16 (palendrome? 162))
-   [171 181 191 202 
-    212 222 232 242 
-    252 262 272 282 
+   [171 181 191 202
+    212 222 232 242
+    252 262 272 282
     292 303 313 323])
-	
+
 (= (take 6 (palendrome? 1234550000))
-   [1234554321 1234664321 1234774321 
+   [1234554321 1234664321 1234774321
     1234884321 1234994321 1235005321])
-	
+
 (= (first (palendrome? (* 111111111 111111111)))
    (* 111111111 111111111))
-	
+
 (= (set (take 199 (palendrome? 0)))
    (set (map #(first (palendrome? %)) (range 0 10000))))
-	
-(= true 
+
+(= true
    (apply < (take 6666 (palendrome? 9999999))))
-	
+
 (= (nth (palendrome? 0) 10101)
    9102019)
