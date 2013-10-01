@@ -666,6 +666,70 @@
 (= (my-merge-with concat {:a [3], :b [6]} {:a [4 5], :c [8 9]} {:b [7]})
    {:a [3 4 5], :b [6 7], :c [8 9]})
 
+; 70. Word Sorting
+
+(defn sort-text [text] (sort-by #(clojure.string/lower-case %) (re-seq #"[a-zA-z]+" text)))
+
+(= (sort-text  "Have a nice day.")
+   ["a" "day" "Have" "nice"])
+(= (sort-text  "Clojure is a fun language!")
+   ["a" "Clojure" "fun" "is" "language"])
+(= (sort-text  "Fools fall for foolish follies.")
+   ["fall" "follies" "foolish" "Fools" "for"])
+
+; 71. Rearranging Code: ->
+
+(= (last (sort (rest (reverse [2 5 4 1 3 6]))))
+   (-> [2 5 4 1 3 6] reverse rest sort __)
+   5)
+
+; 72. Rearranging Code: ->>
+
+(= (apply + (map inc (take 3 (drop 2 [2 5 4 1 3 6]))))
+   (->> [2 5 4 1 3 6] (drop 2) (take 3) (map inc) (__))
+   11)
+
+; 73. Analyze a Tic-Tac-Toe Board
+
+; Method:
+;  Flatten the structure then use 'map' to take each entry in all the winning positions, then repartition in groups of 3
+;     - The winning positions are now horizonal [0 1 2] [3 4 5] [6 7 8]
+;                                      vertical [0 3 6] [1 4 7] [2 5 8]
+;                                  and diagonal [0 4 8] [2 4 6]
+; Finally search the resulting vectors for 3 of either player's pieces - 'some' with a map is great for pattern matching
+
+(defn chess [board]
+  (some {[:o :o :o] :o [:x :x :x] :x}
+        (partition 3 (map (vec (flatten board)) [0 1 2 3 4 5 6 7 8 0 3 6 1 4 7 2 5 8 0 4 8 2 4 6]))))
+
+(= nil (chess [[:e :e :e]
+            [:e :e :e]
+            [:e :e :e]]))
+
+(= :x (chess [[:x :e :o]
+           [:x :e :e]
+           [:x :e :o]]))
+
+(= :o (chess [[:e :x :e]
+           [:o :o :o]
+           [:x :e :x]]))
+
+(= nil (chess [[:x :e :o]
+            [:x :x :e]
+            [:o :x :o]]))
+
+(= :x (chess [[:x :e :e]
+           [:o :x :e]
+           [:o :e :x]]))
+
+(= :o (chess [[:x :e :o]
+           [:x :o :e]
+           [:o :e :x]]))
+
+(= nil (chess [[:x :o :x]
+            [:x :o :x]
+            [:o :x :o]]))
+
 
 ; 150. Palindromic Numbers
 
