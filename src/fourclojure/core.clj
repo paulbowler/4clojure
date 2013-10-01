@@ -700,7 +700,7 @@
 
 (defn chess [board]
   (some {[:o :o :o] :o [:x :x :x] :x}
-        (partition 3 (map (vec (flatten board)) [0 1 2 3 4 5 6 7 8 0 3 6 1 4 7 2 5 8 0 4 8 2 4 6]))))
+        (partition 3 (map (vec (flatten board)) [0 1 2, 3 4 5, 6 7 8, 0 3 6, 1 4 7, 2 5 8, 0 4 8, 2 4 6]))))
 
 (= nil (chess [[:e :e :e]
             [:e :e :e]
@@ -729,6 +729,27 @@
 (= nil (chess [[:x :o :x]
             [:x :o :x]
             [:o :x :o]]))
+
+; 74. Filter Perfect Squares
+
+(defn perfect-squares [s]
+  (->> (re-seq #"\d+" s)
+    (map read-string)
+    (filter (fn [x]
+              (let [r (int (Math/sqrt x))]
+                (= x (* r r)))))
+    (interpose ",")
+    (apply str)))
+
+(= (perfect-squares "4,5,6,7,8,9") "4,9")
+(= (perfect-squares "15,16,25,36,37") "16,25,36")
+
+; 75. Euler's Totient Function
+
+(= (__ 1) 1)
+(= (__ 10) (count '(1 3 7 9)) 4)
+(= (__ 40) 16)
+(= (__ 99) 60)
 
 
 ; 150. Palindromic Numbers
