@@ -746,10 +746,64 @@
 
 ; 75. Euler's Totient Function
 
-(= (__ 1) 1)
-(= (__ 10) (count '(1 3 7 9)) 4)
-(= (__ 40) 16)
-(= (__ 99) 60)
+(defn totient [n] (count (filter #((fn gcd [a b] (if (= 0 b) (= 1 a) (gcd b (mod a b)))) n %) (range 0 n))))
+
+
+(= (totient 1) 1)
+(= (totient 10) (count '(1 3 7 9)) 4)
+(= (totient 40) 16)
+(= (totient 99) 60)
+
+; 76. Intro to Trampoline
+
+(= [1 3 5 7 9 11]
+   (letfn
+     [(foo [x y] #(bar (conj x y) y))
+      (bar [x y] (if (> (last x) 10)
+                   x
+                   #(foo x (+ 2 y))))]
+     (trampoline foo [] 1)))
+
+; 77. Anagram Finder
+
+(defn anagrams [coll]
+  (set (filter #(> (count %) 1) (map set (vals (group-by sort coll))))))
+
+(= (anagrams ["meat" "mat" "team" "mate" "eat"])
+   #{#{"meat" "team" "mate"}})
+(= (anagrams ["veer" "lake" "item" "kale" "mite" "ever"])
+   #{#{"veer" "ever"} #{"lake" "kale"} #{"mite" "item"}})
+
+; 78. Reimplement Trampoline - without using trampoline!
+
+(defn my_trampoline [f & more]
+    (let [r (apply f more)]
+	       (if (fn? r) (my_trampoline r) r)))
+
+(= (letfn [(triple [x] #(sub-two (* 3 x)))
+          (sub-two [x] #(stop?(- x 2)))
+          (stop? [x] (if (> x 50) x #(triple x)))]
+    (my_trampoline triple 2))
+  82)
+
+(= (letfn [(my-even? [x] (if (zero? x) true #(my-odd? (dec x))))
+          (my-odd? [x] (if (zero? x) false #(my-even? (dec x))))]
+    (map (partial my_trampoline my-even?) (range 6)))
+  [true false true false true false])
+
+; 79. Triangle Minimal Path
+
+(= 7 (__ '([1]
+          [2 4]
+         [5 1 4]
+        [2 3 4 5]))) ; 1->2->1->3
+
+(= 20 (__ '([3]
+           [2 4]
+          [1 9 3]
+         [9 9 2 4]
+        [4 6 6 7 8]
+       [5 7 3 5 1 4]))) ; 3->4->3->2->7->1
 
 
 ; 150. Palindromic Numbers
