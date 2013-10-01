@@ -624,9 +624,24 @@
 
 ; 67. Prime Numbers
 
-(= (__ 2) [2 3])
-(= (__ 5) [2 3 5 7 11])
-(= (last (__ 100)) 541)
+; Method: See commented code below for clear version creating using functional decomposition
+
+; (defn factors [x]
+;  (filter #(zero? (mod x %)) (range 2 x)))
+;
+; (defn isprime? [z]
+;  (empty? (factors z)))
+;
+; (defn prime-seq [n] (take n (filter #(isprime? %) (iterate inc 2)))) ; Uses an infinite lazy sequence
+
+; Final, but obsfucated, code written as a sungle function
+
+(defn prime-seq [n]
+  (take n (filter (fn [x] (empty? ((fn factors [x] (filter #(zero? (mod x %)) (range 2 x))) x))) (iterate inc 2))))
+
+(= (prime-seq 2) [2 3])
+(= (prime-seq 5) [2 3 5 7 11])
+(= (last (prime-seq 100)) 541)
 
 
 ; 150. Palindromic Numbers
