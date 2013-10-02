@@ -796,8 +796,10 @@
 ; Method:
 ;   Each parent node in the tre can only navigate chaile elements with the same index or index+1
 ;   Recurse through the levels until there are no more, adding up paths as we go. Follow the min path.
+;   Single arity sets up the index
 
-(defn minimal-path ([tree] (minimal-path tree 0))
+(defn minimal-path
+  ([tree] (minimal-path tree 0))
   ([tree index]
   (if (empty? tree) 0
     (min
