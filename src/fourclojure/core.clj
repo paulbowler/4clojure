@@ -875,10 +875,22 @@
 
 ; 86. Happy numbers
 
-(= (__ 7) true)
-(= (__ 986543210) true)
-(= (__ 2) false)
-(= (__ 3) false)
+; Accoring to Wikipedia, unhappy numbers  ends up in the cycle 4, 16, 37, 58, 89, 145, 42, 20, 4, ...
+; So we just need to check for 4 to return false (a bit inefficient, but not much!)
+
+; The 'happy?' function itself turns the number into a string, seperates each digit, turns each back into a number,
+; squares them (map) and adds them up (reduce). Nice!
+
+(defn happy? [n]
+  (case n
+    1 true
+    4 false
+    (happy? (reduce + (map #(* % %) (map read-string (re-seq #"\d" (str n))))))))
+
+(= (happy? 7) true)
+(= (happy? 986543210) true)
+(= (happy? 2) false)
+(= (happy? 3) false)
 
 ; 88. Symmetric Difference
 
