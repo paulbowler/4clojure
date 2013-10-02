@@ -862,7 +862,7 @@
 ; 83. A Half-Truth
 
 ; Note: My first answer worked at the repl but failed the tests: (= #{true false} (set (vector args[true false]))
-; I ten remembered that variable arity inputs are already stored as a sequence, so 'vector' was not required
+; I then remembered that in a function variable arity inputs are already stored as a sequence, so 'vector' was not required
 
 (defn xor [& args] (= #{true false} (set args)))
 
@@ -873,6 +873,23 @@
 (= false (xor true true true))
 (= true (xor true true true false))
 
+; 86. Happy numbers
+
+(= (__ 7) true)
+(= (__ 986543210) true)
+(= (__ 2) false)
+(= (__ 3) false)
+
+; 88. Symmetric Difference
+
+; In set theory, the symmetric difference is the union - intersection (two circles minus the bit in the middle)
+
+(defn symmetric [& more] (clojure.set/difference (apply clojure.set/union more) (apply clojure.set/intersection more)))
+
+(= (symmetric #{1 2 3 4 5 6} #{1 3 5 7}) #{2 4 6 7})
+(= ((fn [& more] (clojure.set/difference (apply clojure.set/union more) (apply clojure.set/intersection more))) #{:a :b :c} #{}) #{:a :b :c})
+(= (#(clojure.set/difference (apply clojure.set/union %&) (apply clojure.set/intersection %&)) #{} #{4 5 6}) #{4 5 6})
+(= (#(clojure.set/difference (apply clojure.set/union %&) (apply clojure.set/intersection %&)) #{[1 2] [2 3]} #{[2 3] [3 4]}) #{[1 2] [3 4]})
 
 
 ; 150. Palindromic Numbers
