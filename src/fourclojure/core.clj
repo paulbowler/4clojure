@@ -820,6 +820,18 @@
        [5 7 3 5 1 4]))) ; 3->4->3->2->7->1
 
 
+; 80. Perfect Numbers
+
+; We already have a 'factors' function from Q66 which we can reuse here, then reducing with +.
+
+(defn perfect? [z] (= z (reduce + (filter #(zero? (mod z %)) (range 1 z)))))
+
+(= (perfect? 6) true)
+(= (perfect? 7) false)
+(= (perfect? 496) true)
+(= (perfect? 500) false)
+(= (perfect? 8128) true)
+
 ; 150. Palindromic Numbers
 
 ; This works, but takes too long. Instead, it requires a more efficient way of producing palendromic numbers
