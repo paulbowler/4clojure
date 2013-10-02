@@ -793,12 +793,24 @@
 
 ; 79. Triangle Minimal Path
 
-(= 7 (__ '([1]
+; Method:
+;   Each parent node in the tre can only navigate chaile elements with the same index or index+1
+;   Recurse through the levels until there are no more, adding up paths as we go. Follow the min path.
+
+(defn minimal-path ([tree] (minimal-path tree 0))
+  ([tree index]
+  (if (empty? tree) 0
+    (min
+      (+ (nth (first tree) index) (minimal-path (rest tree) index))
+      (+ (nth (first tree) index) (minimal-path (rest tree) (inc index)))
+  ))))
+
+(= 7 (minimal-path '([1]
           [2 4]
          [5 1 4]
         [2 3 4 5]))) ; 1->2->1->3
 
-(= 20 (__ '([3]
+(= 20 (minimal-path '([3]
            [2 4]
           [1 9 3]
          [9 9 2 4]
