@@ -876,15 +876,15 @@
 ; 86. Happy numbers
 
 ; Accoring to Wikipedia, unhappy numbers  ends up in the cycle 4, 16, 37, 58, 89, 145, 42, 20, 4, ...
-; So we just need to check for 4 to return false (a bit inefficient, but not much!)
+; So we just need to check for numbers in this cycle to return false (a bit inefficient, perhaps!)
 
 ; The 'happy?' function itself turns the number into a string, seperates each digit, turns each back into a number,
 ; squares them (map) and adds them up (reduce). Nice!
 
 (defn happy? [n]
   (case n
-    1 true
-    4 false
+     1 true
+    (4, 16, 37, 58, 89, 145, 42, 20) false
     (happy? (reduce + (map #(* % %) (map read-string (re-seq #"\d" (str n))))))))
 
 (= (happy? 7) true)
