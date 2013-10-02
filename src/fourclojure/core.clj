@@ -832,6 +832,15 @@
 (= (perfect? 500) false)
 (= (perfect? 8128) true)
 
+
+; 81. Set Intersection - without using intersection!
+
+(defn intersect [& sets] (set (apply filter sets)))
+
+(= (intersect #{0 1 2 3} #{2 3 4 5}) #{2 3})
+(= (intersect #{0 1 2} #{3 4 5}) #{})
+(= (#(set (apply filter %&)) #{:a :b :c :d} #{:c :e :a :f :d}) #{:a :c :d})
+
 ; 150. Palindromic Numbers
 
 ; This works, but takes too long. Instead, it requires a more efficient way of producing palendromic numbers
