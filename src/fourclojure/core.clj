@@ -841,6 +841,40 @@
 (= (intersect #{0 1 2} #{3 4 5}) #{})
 (= (#(set (apply filter %&)) #{:a :b :c :d} #{:c :e :a :f :d}) #{:a :c :d})
 
+
+; 82. Word Chains
+
+(defn chain? [words]
+  (letfn [(insertion? [x y] (and (= 1 (- (count y) (count x))) (> 2 (count (clojure.set/difference (set x) (set y))))))
+          (deletion? [x y] (insertion? y x))
+          (substitution? [x y] (= 1 (count (filter (fn [[x y]] (not= x y)) (map #(vec [%1 %2]) (vec x) (vec y))))))
+          (neighbour? [x y] (or (insertion? x y) (deletion? x y) (substitution? x y)))]
+    (let [vertices (map (fn [x] (count (filter #(neighbour? % x) words))) words)]
+      (> 2 (count (filter #(= 1 %) vertices))))))
+
+(= true (chain? #{"hat" "coat" "dog" "cat" "oat" "cot" "hot" "hog"}))
+(= false (chain? #{"cot" "hot" "bat" "fat"}))
+(= false (chain? #{"to" "top" "stop" "tops" "toss"}))
+(= true (chain? #{"spout" "do" "pot" "pout" "spot" "dot"}))
+(= true (chain? #{"share" "hares" "shares" "hare" "are"}))
+(= false (chain? #{"share" "hares" "hare" "are"}))
+
+; 83. A Half-Truth
+
+; Note: My first answer worked at the repl but failed the tests: (= #{true false} (set (vector args[true false]))
+; I ten remembered that variable arity inputs are already stored as a sequence, so 'vector' was not required
+
+(defn xor [& args] (= #{true false} (set args)))
+
+(= false (xor false false))
+(= true (xor true false))
+(= false (xor true))
+(= true (xor false true false))
+(= false (xor true true true))
+(= true (xor true true true false))
+
+
+
 ; 150. Palindromic Numbers
 
 ; This works, but takes too long. Instead, it requires a more efficient way of producing palendromic numbers
