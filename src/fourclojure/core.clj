@@ -903,6 +903,28 @@
 (= (#(clojure.set/difference (apply clojure.set/union %&) (apply clojure.set/intersection %&)) #{} #{4 5 6}) #{4 5 6})
 (= (#(clojure.set/difference (apply clojure.set/union %&) (apply clojure.set/intersection %&)) #{[1 2] [2 3]} #{[2 3] [3 4]}) #{[1 2] [3 4]})
 
+; 89. Graph Tour
+
+(defn tourable? [x]
+  (let [connected (loop [src (rest x) temp (first x)]
+      (if (empty? src)
+          true
+        (let [found (filter #(some (set temp) %) src)]
+          (if (empty? found)
+              false
+            (recur (remove (set found) src) (apply concat temp found))))))
+        count-odd #(count (filter (comp odd? second) (frequencies (flatten %))))]
+    (and connected (contains? #{0 2} (count-odd x)))))
+
+(= true (tourable? [[:a :b]]))
+(= false (tourable? [[:a :a] [:b :b]]))
+(= false (tourable? [[:a :b] [:a :b] [:a :c] [:c :a]
+(= true (tourable? [[1 2] [2 3] [3 4] [4 1]]))
+(= true (tourable? [[:a :b] [:a :c] [:c :b] [:a :e]
+              [:b :e] [:a :d] [:b :d] [:c :e]
+              [:d :e] [:c :f] [:d :f]]))
+(= false (tourable? [[1 2] [2 3] [2 4] [2 5]]))
+
 ; 90. Cartesian Product
 
 (defn cartesian [s1 s2]
