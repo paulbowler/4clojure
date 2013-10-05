@@ -942,6 +942,29 @@
 (= 300 (count (cartesian (into #{} (range 10))
                   (into #{} (range 30)))))
 
+; 91. Graph Connectivity - Appears to be the same problem as Q89, with the same solution!
+
+(fn tourable? [x]
+  (let [connected (loop [src (rest x) temp (first x)]
+      (if (empty? src)
+          true
+        (let [found (filter #(some (set temp) %) src)]
+          (if (empty? found)
+              false
+            (recur (remove (set found) src) (apply concat temp found))))))
+        count-odd #(count (filter (comp odd? second) (frequencies (flatten %))))]
+    (and connected (contains? #{0 2} (count-odd x)))))
+
+(= true (tourable? #{[:a :a]}))
+(= true (tourable? #{[:a :b]}))
+(= false (tourable? #{[1 2] [2 3] [3 1]
+(= true (tourable? #{[1 2] [2 3] [3 1]
+              [4 5] [5 6] [6 4] [3 4]}))
+(= false (tourable? #{[:a :b] [:b :c] [:c :d]
+               [:x :y] [:d :a] [:b :e]}))
+(= true (tourable? #{[:a :b] [:b :c] [:c :d]
+              [:x :y] [:d :a] [:b :e] [:x :a]}))
+
 
 ; 150. Palindromic Numbers
 
