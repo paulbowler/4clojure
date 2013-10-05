@@ -977,6 +977,24 @@
 (= 3999 (roman "MMMCMXCIX"))
 (= 48 (roman "XLVIII"))
 
+; 93. Partially Flatten a Sequence
+
+(defn part [coll]
+  (let [l (first coll) r (next coll)]
+    (concat
+      (if (and (sequential? l) (not (sequential? (first l))))
+        [l]
+        (part l))
+      (when (sequential? r)
+        (part r)))))
+
+(= (part [["Do"] ["Nothing"]])
+   [["Do"] ["Nothing"]])
+(= (part [[[[:a :b]]] [[:c :d]] [:e :f]])
+   [[:a :b] [:c :d] [:e :f]])
+(= (part '((1 2)((3 4)((((5 6)))))))
+   '((1 2)(3 4)(5 6)))
+
 ; 150. Palindromic Numbers
 
 ; This works, but takes too long. Instead, it requires a more efficient way of producing palendromic numbers
