@@ -965,6 +965,17 @@
 (= true (tourable? #{[:a :b] [:b :c] [:c :d]
               [:x :y] [:d :a] [:b :e] [:x :a]}))
 
+; 92. Read Roman numerals
+
+(defn roman [numerals]
+  (reduce + (map #(if (< (first %) (last %)) (- (first %)) (first %))
+     (partition 2 1
+         (map #(case % "M" 1000 "D" 500 "C" 100 "L" 50 "X" 10 "V" 5 "I" 1 "O" 0) (re-seq #"[MDCLXVIO]" (str numerals "O")))))))
+
+(= 14 (roman "XIV"))
+(= 827 (roman "DCCCXXVII"))
+(= 3999 (roman "MMMCMXCIX"))
+(= 48 (roman "XLVIII"))
 
 ; 150. Palindromic Numbers
 
