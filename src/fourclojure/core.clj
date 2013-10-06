@@ -996,6 +996,29 @@
 (= (part '((1 2)((3 4)((((5 6)))))))
    '((1 2)(3 4)(5 6)))
 
+; 95. To Tree, or not to Tree
+
+(defn tree? [n]
+    (or (nil? n)
+        (and (coll? n)
+             (= 3 (count n))
+             (every? tree? (rest n)))))
+
+(= (tree? '(:a (:b nil nil) nil))
+   true)
+(= (tree? '(:a (:b nil nil)))
+   false)
+(= (tree? [1 nil [2 [3 nil nil] [4 nil nil]]])
+   true)
+(= (tree? [1 [2 nil nil] [3 nil nil] [4 nil nil]])
+   false)
+(= (tree? [1 [2 [3 [4 nil nil] nil] nil] nil])
+   true)
+(= (tree? [1 [2 [3 [4 false nil] nil] nil] nil])
+   false)
+(= (tree? '(:a nil ()))
+   false)
+
 ; 150. Palindromic Numbers
 
 ; This works, but takes too long. Instead, it requires a more efficient way of producing palendromic numbers
