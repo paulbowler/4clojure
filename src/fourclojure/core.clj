@@ -1043,6 +1043,26 @@
           [2 [3 nil [4 [6 nil nil] nil]] nil]])
    false)
 
+; 97. Pascal's Triangle
+
+; A recursive solution, which I'd like to have avoided due to Integer/stack overflow issues with large numbers,
+; but it solves the immediate problem and passes the tests.
+
+(defn pascal [n]
+  (if (= n 1)
+    [1]
+    (map #(apply + %) (partition 2 1 (concat [0] (pascal (- n 1)) [0])))))
+
+(= (pascal 1) [1])
+(= (map pascal (range 1 6))
+   [     [1]
+        [1 1]
+       [1 2 1]
+      [1 3 3 1]
+     [1 4 6 4 1]])
+(= (pascal 11)
+   [1 10 45 120 210 252 210 120 45 10 1])
+
 
 ; 150. Palindromic Numbers
 
