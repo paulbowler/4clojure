@@ -918,7 +918,7 @@
 
 (= true (tourable? [[:a :b]]))
 (= false (tourable? [[:a :a] [:b :b]]))
-(= false (tourable? [[:a :b] [:a :b] [:a :c] [:c :a]
+(= false (tourable? [[:a :b] [:a :b] [:a :c] [:c :a]]))
 (= true (tourable? [[1 2] [2 3] [3 4] [4 1]]))
 (= true (tourable? [[:a :b] [:a :c] [:c :b] [:a :e]
               [:b :e] [:a :d] [:b :d] [:c :e]
@@ -957,7 +957,7 @@
 
 (= true (tourable? #{[:a :a]}))
 (= true (tourable? #{[:a :b]}))
-(= false (tourable? #{[1 2] [2 3] [3 1]
+(= false (tourable? #{[1 2] [2 3] [3 1]}))
 (= true (tourable? #{[1 2] [2 3] [3 1]
               [4 5] [5 6] [6 4] [3 4]}))
 (= false (tourable? #{[:a :b] [:b :c] [:c :d]
@@ -1016,8 +1016,7 @@
    true)
 (= (tree? [1 [2 [3 [4 false nil] nil] nil] nil])
    false)
-(= (tree? '(:a nil ()))
-   false)
+(= (tree? '(:a nil ())) false)
 
 ; 96. Beauty is Symmetry
 
@@ -1063,6 +1062,13 @@
 (= (pascal 11)
    [1 10 45 120 210 252 210 120 45 10 1])
 
+99. Product Digits
+
+(defn prod [x y] (map read-string (re-seq #"\d" (str (* x y)))))
+
+(= (prod 1 1) [1])
+(= (prod 99 9) [8 9 1])
+(= (#(map read-string (re-seq #"\d" (str (* %1 %2)))) 999 99) [9 8 9 0 1])
 
 ; 150. Palindromic Numbers
 
