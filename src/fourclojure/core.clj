@@ -1051,7 +1051,7 @@
 (defn pascal [n]
   (if (= n 1)
     [1]
-    (map #(apply + %) (partition 2 1 (concat [0] (pascal (- n 1)) [0])))))
+    (map #(apply + %) (partition 2 1 (concat [0] (pascal (dec n)) [0])))))
 
 (= (pascal 1) [1])
 (= (map pascal (range 1 6))
