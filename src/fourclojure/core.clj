@@ -1019,6 +1019,31 @@
 (= (tree? '(:a nil ()))
    false)
 
+; 96. Beauty is Symmetry
+
+(defn symmetric? [tree]
+  ((fn mirror? [l r]
+     (if (or (= nil l r)
+             (and (= (first l) (first r))
+                  (mirror? (second l) (last r))
+                  (mirror? (last l) (second r))))
+       true false))
+   (second tree) (last tree)))
+
+(= (symmetric? '(:a (:b nil nil) (:b nil nil))) true)
+(= (symmetric? '(:a (:b nil nil) nil)) false)
+(= (symmetric? '(:a (:b nil nil) (:c nil nil))) false)
+(= (symmetric? [1 [2 nil [3 [4 [5 nil nil] [6 nil nil]] nil]]
+          [2 [3 nil [4 [6 nil nil] [5 nil nil]]] nil]])
+   true)
+(= (symmetric? [1 [2 nil [3 [4 [5 nil nil] [6 nil nil]] nil]]
+          [2 [3 nil [4 [5 nil nil] [6 nil nil]]] nil]])
+   false)
+(= (symmetric? [1 [2 nil [3 [4 [5 nil nil] [6 nil nil]] nil]]
+          [2 [3 nil [4 [6 nil nil] nil]] nil]])
+   false)
+
+
 ; 150. Palindromic Numbers
 
 ; This works, but takes too long. Instead, it requires a more efficient way of producing palendromic numbers
