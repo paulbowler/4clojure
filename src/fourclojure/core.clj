@@ -1082,6 +1082,16 @@
 (== (lcm 3/4 1/6) 3/2)
 (== (lcm 7 5/7 2 3/5) 210)
 
+; 102. intoCamelCase
+
+(defn camel [text]
+  (let [words (clojure.string/split text #"-")]
+    (apply str (apply concat (first words) (map clojure.string/capitalize (rest words))))))
+
+(= (camel "something") "something")
+(= (camel "multi-word-key") "multiWordKey")
+(= (camel "leaveMeAlone") "leaveMeAlone")
+
 ; 150. Palindromic Numbers
 
 ; This works, but takes too long. Instead, it requires a more efficient way of producing palendromic numbers
