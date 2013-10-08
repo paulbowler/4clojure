@@ -1070,6 +1070,18 @@
 (= (prod 99 9) [8 9 1])
 (= (#(map read-string (re-seq #"\d" (str (* %1 %2)))) 999 99) [9 8 9 0 1])
 
+; 100. Least Common Multiple
+
+(defn lcm [n & more]
+  (letfn [(gcd [x y] (if (zero? y) x (recur y (rem x y))))]
+    (reduce #(/ (* %1 %2) (gcd %1 %2)) n more)))
+
+(== (lcm 2 3) 6)
+(== (lcm 5 3 7) 105)
+(== (lcm 1/3 2/5) 2)
+(== (lcm 3/4 1/6) 3/2)
+(== (lcm 7 5/7 2 3/5) 210)
+
 ; 150. Palindromic Numbers
 
 ; This works, but takes too long. Instead, it requires a more efficient way of producing palendromic numbers
