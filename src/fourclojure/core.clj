@@ -1092,6 +1092,15 @@
 (= (camel "multi-word-key") "multiWordKey")
 (= (camel "leaveMeAlone") "leaveMeAlone")
 
+; 107. Simple closures
+
+(defn pow [x] (fn [y] (int (Math/pow y x))))
+
+(= 256 ((pow 2) 16),
+       ((pow 8) 2))
+(= [1 8 27 64] (map ((fn pow [x] (fn [y] (int (Math/pow y x)))) 3) [1 2 3 4]))
+(= [1 2 4 8 16] (map #((#(fn [y] (int (Math/pow y %))) %) 2) [0 1 2 3 4]))
+
 ; 150. Palindromic Numbers
 
 ; This works, but takes too long. Instead, it requires a more efficient way of producing palendromic numbers
