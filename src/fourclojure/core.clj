@@ -1101,6 +1101,15 @@
 (= [1 8 27 64] (map ((fn pow [x] (fn [y] (int (Math/pow y x)))) 3) [1 2 3 4]))
 (= [1 2 4 8 16] (map #((#(fn [y] (int (Math/pow y %))) %) 2) [0 1 2 3 4]))
 
+; 110. Sequence of pronunciations
+
+(defn pronounce [seq] (drop 1 (iterate (fn [seq] (vec (flatten (map #(vector (count %) (first %)) (partition-by identity seq))))) seq)))
+
+(= [[1 1] [2 1] [1 2 1 1]] (take 3 (pronounce [1])))
+(= [3 1 2 4] (first (pronounce [1 1 1 4 4])))
+(= [1 1 1 3 2 1 3 2 1 1] (nth (pronounce [1]) 6))
+(= 338 (count (nth (pronounce [3 2]) 15)))
+
 ; 150. Palindromic Numbers
 
 ; This works, but takes too long. Instead, it requires a more efficient way of producing palendromic numbers
