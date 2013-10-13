@@ -1103,7 +1103,7 @@
 
 ; 110. Sequence of pronunciations
 
-(defn pronounce [seq] (drop 1 (iterate (fn [seq] (vec (flatten (map #(vector (count %) (first %)) (partition-by identity seq))))) seq)))
+(defn pronounce [seq] (rest (iterate (fn [seq] (vec (flatten (map #(vector (count %) (first %)) (partition-by identity seq))))) seq)))
 
 (= [[1 1] [2 1] [1 2 1 1]] (take 3 (pronounce [1])))
 (= [3 1 2 4] (first (pronounce [1 1 1 4 4])))
