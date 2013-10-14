@@ -1110,6 +1110,15 @@
 (= [1 1 1 3 2 1 3 2 1 1] (nth (pronounce [1]) 6))
 (= 338 (count (nth (pronounce [3 2]) 15)))
 
+; 120. Sum of square of digits
+
+(defn count-lt-sum-sqr [coll] (count (filter true? (map (fn [n] (< n (reduce + (map #(* % %) (map read-string (map str (flatten (partition 1 (str n))))))))) coll))))
+
+(= 8 (count-lt-sum-sqr (range 10)))
+(= 19 (count-lt-sum-sqr (range 30)))
+(= 50 (count-lt-sum-sqr (range 100)))
+(= 50 (count-lt-sum-sqr (range 1000)))
+
 ; 150. Palindromic Numbers
 
 ; This works, but takes too long. Instead, it requires a more efficient way of producing palendromic numbers
