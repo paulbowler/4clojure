@@ -1131,6 +1131,11 @@
 (= 1365  (read-binary "10101010101"))
 (= 65535 (read-binary "1111111111111111"))
 
+; 126. Through the Looking Class
+
+(let [x Class]
+  (and (= (class x) x) x))
+
 ; 150. Palindromic Numbers
 
 ; This works, but takes too long. Instead, it requires a more efficient way of producing palendromic numbers
