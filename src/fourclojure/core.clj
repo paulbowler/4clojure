@@ -1177,6 +1177,15 @@
 (false? (#(and (nil? (%1 %2)) (contains? %2 %1)) :b {:a nil :b 2}))
 (false? (#(and (nil? (%1 %2)) (contains? %2 %1)) :c {:a nil :b 2}))
 
+; 135. Infix Calculator
+
+(defn infix [n & more] (reduce #((first %2) % (last %2)) n (partition 2 more)))
+
+(= 7  (infix 2 + 5))
+(= 42 (infix 38 + 48 - 2 / 2))
+(= 8  (infix 10 / 2 - 1 * 2))
+(= 72 (infix 20 / 2 + 2 + 4 + 8 - 6 - 10 * 9))
+
 ; 150. Palindromic Numbers
 
 ; This works, but takes too long. Instead, it requires a more efficient way of producing palendromic numbers
