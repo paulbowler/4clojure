@@ -1195,6 +1195,19 @@
 (= 32 (#(apply + (map * %1 %2)) [1 2 3] [4 5 6]))
 (= 256 (#(apply + (map * %1 %2)) [2 5 6] [100 10 1]))
 
+; 144. Oscilrate
+
+(defn oscilrate [n & funcs]
+  (cons n
+    (lazy-seq
+      (apply oscilrate
+        (cons ((first funcs) n)
+              (concat (rest funcs) (take 1 funcs)))))))
+
+(= (take 3 (oscilrate 3.14 int double)) [3.14 3 3.0])
+(= (take 5 (oscilrate 3 #(- % 3) #(+ 5 %))) [3 0 5 2 7])
+(= (take 12 (oscilrate 0 inc dec inc dec inc)) [0 1 0 1 0 1 2 1 2 1 2 3])
+
 ; 150. Palindromic Numbers
 
 ; This works, but takes too long. Instead, it requires a more efficient way of producing palendromic numbers
