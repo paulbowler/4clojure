@@ -1121,6 +1121,8 @@
 
 ; 122. Read a binary number
 
+; Note: I tried to solve this using 'pure' clojure, i.e. Java interop with #(Integer/parseInt % 2) would have been cheating!
+
 (defn read-binary [n] (reduce + (map * (map read-string (map str (reverse n))) (take (count n) (iterate #(* 2 %) 1)))))
 
 (= 0     (read-binary "0"))
