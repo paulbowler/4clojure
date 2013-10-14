@@ -1171,6 +1171,12 @@
                        (= (mod a 2) (mod b 2)))
                      :same))))
 
+; 134. A nil key
+
+(true?  (#(and (nil? (%1 %2)) (contains? %2 %1)) :a {:a nil :b 2}))
+(false? (#(and (nil? (%1 %2)) (contains? %2 %1)) :b {:a nil :b 2}))
+(false? (#(and (nil? (%1 %2)) (contains? %2 %1)) :c {:a nil :b 2}))
+
 ; 150. Palindromic Numbers
 
 ; This works, but takes too long. Instead, it requires a more efficient way of producing palendromic numbers
