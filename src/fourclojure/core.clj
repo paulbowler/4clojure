@@ -1136,6 +1136,22 @@
 (let [x Class]
   (and (= (class x) x) x))
 
+; 128. Recognize Playing Cards
+
+(defn cards [card]
+  (let [bits (map str (seq card))
+        suit (first bits)
+        rank (last bits)]
+    {:suit ((keyword suit) {:D :diamond :H :heart :S :spade :C :club})
+     :rank ((keyword rank) {:2 0 :3 1 :4 2 :5 3 :6 4 :7 5 :8 6 :9 7 :T 8 :J 9 :Q 10 :K 11 :A 12})}))
+
+(= {:suit :diamond :rank 10} (cards "DQ"))
+(= {:suit :heart :rank 3} (cards "H5"))
+(= {:suit :club :rank 12} (cards "CA"))
+(= (range 13) (map (comp :rank cards str)
+                   '[S2 S3 S4 S5 S6 S7
+                     S8 S9 ST SJ SQ SK SA]))
+
 ; 150. Palindromic Numbers
 
 ; This works, but takes too long. Instead, it requires a more efficient way of producing palendromic numbers
