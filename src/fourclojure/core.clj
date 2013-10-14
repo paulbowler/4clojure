@@ -1119,6 +1119,18 @@
 (= 50 (count-lt-sum-sqr (range 100)))
 (= 50 (count-lt-sum-sqr (range 1000)))
 
+; 122. Read a binary number
+
+(defn read-binary [n] (reduce + (map * (map read-string (map str (reverse n))) (take (count n) (iterate #(* 2 %) 1)))))
+
+(= 0     (read-binary "0"))
+(= 7     (read-binary "111"))
+(= 8     (read-binary "1000"))
+(= 9     (read-binary "1001"))
+(= 255   (read-binary "11111111"))
+(= 1365  (read-binary "10101010101"))
+(= 65535 (read-binary "1111111111111111"))
+
 ; 150. Palindromic Numbers
 
 ; This works, but takes too long. Instead, it requires a more efficient way of producing palendromic numbers
