@@ -1186,6 +1186,13 @@
 (= 8  (infix 10 / 2 - 1 * 2))
 (= 72 (infix 20 / 2 + 2 + 4 + 8 - 6 - 10 * 9))
 
+; 143. dot product
+
+(= 0 (#(apply + (map * %1 %2)) [0 1 0] [1 0 0]))
+(= 3 (#(apply + (map * %1 %2)) [1 1 1] [1 1 1]))
+(= 32 (#(apply + (map * %1 %2)) [1 2 3] [4 5 6]))
+(= 256 (#(apply + (map * %1 %2)) [2 5 6] [100 10 1]))
+
 ; 150. Palindromic Numbers
 
 ; This works, but takes too long. Instead, it requires a more efficient way of producing palendromic numbers
