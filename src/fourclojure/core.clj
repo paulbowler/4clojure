@@ -1152,6 +1152,25 @@
                    '[S2 S3 S4 S5 S6 S7
                      S8 S9 ST SJ SQ SK SA]))
 
+; 132. Insert between two items
+
+(defn insert-between [pred v coll]
+  (flatten
+   (map drop-last
+        (map #(if (pred (first %) (last %)) (vector (first %) v (last %)) (vector (first %) (last %))) (partition 2 1 [] coll)))))
+
+(= '(1 :less 6 :less 7 4 3) (insert-between < :less [1 6 7 4 3]))
+(= '(2) (insert-between > :more [2]))
+(= [0 1 :x 2 :x 3 :x 4]  (insert-between #(and (pos? %) (< % %2)) :x (range 5)))
+(empty? (insert-between > :more ()))
+(= [0 1 :same 1 2 3 :same 5 8 13 :same 21]
+   (take 12 (->> [0 1]
+                 (iterate (fn [[a b]] [b (+ a b)]))
+                 (map first) ; fibonacci numbers
+                 (insert-between (fn [a b] ; both even or both odd
+                       (= (mod a 2) (mod b 2)))
+                     :same))))
+
 ; 150. Palindromic Numbers
 
 ; This works, but takes too long. Instead, it requires a more efficient way of producing palendromic numbers
