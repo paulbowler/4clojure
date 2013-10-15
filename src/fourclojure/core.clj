@@ -1273,3 +1273,13 @@
 (clojure.set/subset? #{1} #{1 2})
 (clojure.set/superset? #{1 2} #{1 2})
 (clojure.set/subset? #{1 2} #{1 2})
+
+; 162. Logical falsity and truth
+
+(= 1 (if-not false 1 0))
+(= 1 (if-not nil 1 0))
+(= 1 (if true 1 0))
+(= 1 (if [] 1 0))
+(= 1 (if [0] 1 0))
+(= 1 (if 0 1 0))
+(= 1 (if 1 1 0))
