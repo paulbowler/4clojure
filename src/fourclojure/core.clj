@@ -3,7 +3,8 @@
 ;; Distributed under the Eclipse Public License, the same as 4Clojure.
 ;;
 
-(ns fourclojure.core)
+(ns fourclojure.core
+  (:require clojure.core))
 
 ; 1. Simple Maths
 
@@ -119,7 +120,7 @@
 ; 15. Double Down - many alternatives
 
 (= ((fn double-down [x] (* 2 x)) 2) 4)
-(= ((fn [x] (+ x x) 3) 6)
+(= ((fn [x] (+ x x) 3) 6))
 (= (#(* 2 %1) 11) 22)
 (= (#(* 2 %) 7) 14)
 
@@ -169,11 +170,6 @@
 
 ; 20. Penultimate Element
 
-; Options:
-;	We can reverse the list, drop the head item and return the next
-; 	We can take the 'nth' using the count - 2
-;	Or drop the first 'count minus 2' and take the next)
-
 (= (#(first (drop 1 (reverse %))) (list 1 2 3 4 5)) 4)
 (= (#(nth % (- (count %) 2)) ["a" "b" "c"]) "b")
 (= (#(first (drop (- (count %) 2) %)) [[1 2] [3 4]]) [1 2])
@@ -214,7 +210,7 @@
 
 (= (#(reduce + %) [1 2 3]) 6)
 (= (#(reduce + %) (list 0 -2 5 5)) 8)
-(= (#(reduce + %)) 7)
+(= (#(reduce + %) #{4 2 1}) 7)
 (= (#(reduce + %) '(0 0 -1)) -1)
 (= (#(reduce + %) '(1 10 3)) 14)
 
@@ -339,10 +335,11 @@
 
 ; Sort the parameters and take the last (or first if sorting by > function).
 ; NOTE: Variable arity equivalent of '& more' in anonymous functions is %&
+; Equivalent: #(last (sort %&))
 
 (= ((fn [& more] (last (sort more))) 1 8 3 4) 8)
-(= (#(last (sort %&)) 30 20) 30)
-(= (#(first (sort > %&)) 45 67 11) 67)
+(= ((fn [& more] (last (sort more))) 30 20) 30)
+(= ((fn [& more] (last (sort more))) 45 67 11) 67)
 
 ; 39. Interleave Two Seqs - without using interleave
 
@@ -385,9 +382,9 @@
 
 ; Partition in sets of n, then create a new list each item at the same position of each subseq.
 
-(= (#(apply map list (partition %2 %1))) [1 2 3 4 5 6] 2) '((1 3 5) (2 4 6)))
-(= (#(apply map list (partition %2 %1))) (range 9) 3) '((0 3 6) (1 4 7) (2 5 8)))
-(= (#(apply map list (partition %2 %1))) (range 10) 5) '((0 5) (1 6) (2 7) (3 8) (4 9)))
+(= (#(apply map list (partition %2 %1))) [1 2 3 4 5 6] 2) '((1 3 5) (2 4 6))
+(= (#(apply map list (partition %2 %1))) (range 9) 3) '((0 3 6) (1 4 7) (2 5 8))
+(= (#(apply map list (partition %2 %1))) (range 10) 5) '((0 5) (1 6) (2 7) (3 8) (4 9))
 
 ; 44. Rotate Sequence
 
@@ -411,14 +408,14 @@
 (= 3 (((fn [func] (fn [x y] (func y x))) nth) 2 [1 2 3 4 5]))
 (= true (((fn [func] (fn [x y] (func y x))) >) 7 8))
 (= 4 (((fn [func] (fn [x y] (func y x))) quot) 2 8))
-(= [1 2 3] ((__ take) [1 2 3 4 5] 3))
+(= [1 2 3] (((fn [func] (fn [x y] (func y x))) take) [1 2 3 4 5] 3))
 
 ; 47. Contain Yourself - Note: Keys in vectors are array positions!
 
 (contains? #{4 5 6} 4)
 (contains? [1 1 1 1 1] 4)
 (contains? {4 :a 2 :b} 4)
-(not (contains? '(1 2 4) 4))
+;(not (contains? '(1 2 4) 4))
 
 ; 48. Intro to some
 
@@ -431,7 +428,7 @@
 
 (= (#(vector (vec (take %1 %2)) (vec (drop %1 %2))) 3 [1 2 3 4 5 6]) [[1 2 3] [4 5 6]])
 (= (#(vector (vec (take %1 %2)) (vec (drop %1 %2))) 1 [:a :b :c :d]) [[:a] [:b :c :d]])
-(= (__ 2 [[1 2] [3 4] [5 6]]) [[[1 2] [3 4]] [[5 6]]])
+(= (#(vector (vec (take %1 %2)) (vec (drop %1 %2))) 2 [[1 2] [3 4] [5 6]]) [[[1 2] [3 4]] [[5 6]]])
 
 ; 50. Split by Type
 
@@ -622,26 +619,26 @@
 (= (gcf 5 7) 1)
 (= (gcf 1023 858) 33)
 
-; 67. Prime Numbers
+; 67.  Numbers
 
 ; Method: See commented code below for clear version creating using functional decomposition
 
 ; (defn factors [x]
 ;  (filter #(zero? (mod x %)) (range 2 x)))
 ;
-; (defn isprime? [z]
+; (defn is? [z]
 ;  (empty? (factors z)))
 ;
-; (defn prime-seq [n] (take n (filter #(isprime? %) (iterate inc 2)))) ; Uses an infinite lazy sequence
+; (defn -seq [n] (take n (filter #(is? %) (iterate inc 2)))) ; Uses an infinite lazy sequence
 
 ; Final, but obsfucated, code written as a sungle function
 
-(defn prime-seq [n]
+(defn -seq [n]
   (take n (filter (fn [x] (empty? ((fn factors [x] (filter #(zero? (mod x %)) (range 2 x))) x))) (iterate inc 2))))
 
-(= (prime-seq 2) [2 3])
-(= (prime-seq 5) [2 3 5 7 11])
-(= (last (prime-seq 100)) 541)
+(= (-seq 2) [2 3])
+(= (-seq 5) [2 3 5 7 11])
+(= (last (-seq 100)) 541)
 
 ; 68. Recurring Theme
 
@@ -680,13 +677,13 @@
 ; 71. Rearranging Code: ->
 
 (= (last (sort (rest (reverse [2 5 4 1 3 6]))))
-   (-> [2 5 4 1 3 6] reverse rest sort __)
+   (-> [2 5 4 1 3 6] reverse rest sort last)
    5)
 
 ; 72. Rearranging Code: ->>
 
 (= (apply + (map inc (take 3 (drop 2 [2 5 4 1 3 6]))))
-   (->> [2 5 4 1 3 6] (drop 2) (take 3) (map inc) (__))
+   (->> [2 5 4 1 3 6] (drop 2) (take 3) (map inc) (apply +))
    11)
 
 ; 73. Analyze a Tic-Tac-Toe Board
@@ -839,7 +836,7 @@
 
 (= (intersect #{0 1 2 3} #{2 3 4 5}) #{2 3})
 (= (intersect #{0 1 2} #{3 4 5}) #{})
-(= (#(set (apply filter %&)) #{:a :b :c :d} #{:c :e :a :f :d}) #{:a :c :d})
+(= (intersect #{:a :b :c :d} #{:c :e :a :f :d}) #{:a :c :d})
 
 
 ; 82. Word Chains
@@ -1062,7 +1059,7 @@
 (= (pascal 11)
    [1 10 45 120 210 252 210 120 45 10 1])
 
-99. Product Digits
+; 99. Product Digits
 
 (defn prod [x y] (map read-string (re-seq #"\d" (str (* x y)))))
 
@@ -1099,7 +1096,7 @@
 (= 256 ((pow 2) 16),
        ((pow 8) 2))
 (= [1 8 27 64] (map ((fn pow [x] (fn [y] (int (Math/pow y x)))) 3) [1 2 3 4]))
-(= [1 2 4 8 16] (map #((#(fn [y] (int (Math/pow y %))) %) 2) [0 1 2 3 4]))
+(= [1 2 4 8 16] (map #((pow %) 2) [0 1 2 3 4]))
 
 ; 110. Sequence of pronunciations
 
