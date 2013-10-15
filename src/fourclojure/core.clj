@@ -1220,6 +1220,20 @@
 (= [1 5 9 13 17 21 25 29 33 37] (for [[x y] (partition 2 (range 20))]
         (+ x y)))
 
+; 147. Pascal's Trapezoid
+
+(defn pascal [coll]
+  (let [fst (first coll)
+        lst  (last coll)
+        mid   (map #(reduce +' %) (partition 2 1 coll))
+        all   (into [] (flatten [fst mid lst]))]
+    (cons coll (lazy-seq (pascal all)))))
+
+(= (second (pascal [2 3 2])) [2 5 5 2])
+(= (take 5 (pascal [1])) [[1] [1 1] [1 2 1] [1 3 3 1] [1 4 6 4 1]])
+(= (take 2 (pascal [3 1 2])) [[3 1 2] [3 4 3 2]])
+(= (take 100 (pascal [2 4 2])) (rest (take 101 (__ [2 2]))))
+
 ; 150. Palindromic Numbers
 
 ; This works, but takes too long. Instead, it requires a more efficient way of producing palendromic numbers
