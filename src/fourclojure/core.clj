@@ -1208,6 +1208,18 @@
 (= (take 5 (oscilrate 3 #(- % 3) #(+ 5 %))) [3 0 5 2 7])
 (= (take 12 (oscilrate 0 inc dec inc dec inc)) [0 1 0 1 0 1 2 1 2 1 2 3])
 
+; 145. For the win
+
+(= [1 5 9 13 17 21 25 29 33 37] (for [x (range 40)
+            :when (= 1 (rem x 4))]
+        x))
+(= [1 5 9 13 17 21 25 29 33 37] (for [x (iterate #(+ 4 %) 0)
+            :let [z (inc x)]
+            :while (< z 40)]
+        z))
+(= [1 5 9 13 17 21 25 29 33 37] (for [[x y] (partition 2 (range 20))]
+        (+ x y)))
+
 ; 150. Palindromic Numbers
 
 ; This works, but takes too long. Instead, it requires a more efficient way of producing palendromic numbers
