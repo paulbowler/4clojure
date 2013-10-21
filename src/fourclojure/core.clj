@@ -665,7 +665,7 @@
 
 ; 70. Word Sorting
 
-(defn sort-text [text] (sort-by #(clojure.string/lower-case %) (re-seq #"[a-zA-z]+" text)))
+(defn sort-text [text] (sort-by #(clojure.string/lower-case %) (re-seq #"\w+" text)))
 
 (= (sort-text  "Have a nice day.")
    ["a" "day" "Have" "nice"])
